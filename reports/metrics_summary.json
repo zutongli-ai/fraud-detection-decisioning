@@ -1,0 +1,33 @@
+{
+  "validation": {
+    "base_rate": 0.03904053916754157,
+    "pr_auc": 0.5723447634265499,
+    "K_decline": 100,
+    "K_review": 1000,
+    "K_step_up_total": 10000,
+    "precision@100": 1.0,
+    "recall@100": 0.010843634786380394,
+    "precision@1000": 0.915,
+    "recall@1000": 0.19843851659076123,
+    "precision@10000": 0.3174,
+    "recall@10000": 0.6883539362394274,
+    "t_decline_rank": 0.990607590335304,
+    "t_review_rank": 0.8915079148725272,
+    "t_step_up_rank": 0.057336531098498886
+  },
+  "test": {
+    "base_rate": 0.034409184813899145,
+    "pr_auc": 0.4623303114942475,
+    "precision@100": 1.0,
+    "recall@100": 0.024606299212598427,
+    "precision@1000": 0.9,
+    "recall@1000": 0.22145669291338582,
+    "precision@10000": 0.243,
+    "recall@10000": 0.5979330708661418,
+    "t_decline_rank": 0.9892054938956216,
+    "t_review_rank": 0.7998094758870729,
+    "t_step_up_rank": 0.06496093758287563,
+    "max_psi_score_drift": 0.06727601895757541
+  },
+  "notes": "Time-based split. Numeric-only baseline. Capacity-locked (rank-based) policy shown; fixed-threshold policy causes queue volume drift."
+}

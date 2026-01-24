@@ -1,0 +1,16 @@
+# mac
+.DS_Store
+
+# data (never commit kaggle data)
+data/raw/
+data/processed/
+
+# jupyter
+.ipynb_checkpoints/
+
+# python
+__pycache__/
+*.pyc
+
+# venv
+.venv/

@@ -4,6 +4,11 @@ End-to-end, industry-style fraud risk pipeline: **train → evaluate → decisio
 
 This project focuses on what real fraud systems do: **rank transactions by risk** and convert scores into **operational actions under capacity constraints**.
 
+## Quick links
+- [Model card](reports/model_card.md)
+- [Metrics summary](reports/metrics_summary.json)
+- [Notebook](notebooks/01_eda.ipynb)
+
 ---
 
 ## Problem

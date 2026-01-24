@@ -25,6 +25,20 @@ We care about:
 
 > > ⚠️ **Data is not included in this repo** (Kaggle files are not redistributed).
 
+### Download + place data (local)
+1) Download the IEEE-CIS Fraud Detection files from Kaggle.
+2) Put these CSVs under `data/raw/ieee/`:
+
+- `train_transaction.csv`
+- `train_identity.csv`
+- `test_transaction.csv`
+- `test_identity.csv`
+
+Then run:
+
+```bash
+python -m src.fraud.prepare_ieee
+
 ---
 
 ## Baseline model (numeric-only)

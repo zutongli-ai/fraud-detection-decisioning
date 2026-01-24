@@ -56,9 +56,10 @@ Why baseline first: ship a strong simple model before complex encoding.
   - Valid: precision **0.317**, recall **0.688**
   - Test:  precision **0.243**, recall **0.598**
 
-Interpretation:
-- Precision@K measures: “If we only look at the top K risky transactions, what fraction are fraud?”
-- Even at K=10,000, precision is ~**8× lift** vs base rate (0.317 / 0.039 ≈ 8.1) on validation.
+## Key takeaways (so what?)
+- **Drift is real:** PR-AUC drops on the future test slice (0.572 → 0.462), which is expected under time-based splits.
+- **Ranking still works:** Top-K precision remains strong (e.g., Precision@1000 ≈ 0.90 on test), meaning fraud is concentrated near the top of the score ranking—useful for triage.
+- **Capacity is a product decision:** Increasing K trades precision for recall (K=1,000 vs 10,000). Choose K based on review/step-up capacity and the cost of false positives vs missed fraud.
 
 ---
 
@@ -87,16 +88,6 @@ We generate simple monitoring artifacts you’d expect in production:
 1) **Score drift over time bins** (mean score per time slice)
 2) **Fraud rate drift over time bins** (label drift)
 3) **PSI over time bins** (distribution shift vs first bin)
-
-Figures (in repo):
-- `reports/figures/score_drift_test.png`
-- `reports/figures/fraud_rate_over_time_test.png`
-- `reports/figures/psi_score_drift_test.png`
-- `reports/figures/pr_curve_valid.png`
-
----
-
-## Key plots
 
 ### PR Curve (Validation)
 <img src="reports/figures/pr_curve_valid.png" width="650">

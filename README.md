@@ -24,14 +24,6 @@ We care about:
 - Split: **time-based 60/20/20** using `TransactionDT` (prevents leakage + reflects production drift)
 
 > > ⚠️ **Data is not included in this repo** (Kaggle files are not redistributed).
-> 
-> **To run locally:**
-> 1. Download the IEEE-CIS Fraud Detection data from Kaggle.
-> 2. Place the files under `data/raw/ieee/`:
->    - `train_transaction.csv`
->    - `train_identity.csv`
->    - `test_transaction.csv`
->    - `test_identity.csv`
 
 ---
 

@@ -2,7 +2,7 @@
 
 End-to-end, industry-style fraud risk pipeline: **train → evaluate → decision policy (decline / review / step-up / approve) → monitoring (drift + PSI)**.
 
-This project focuses on what real fraud systems do: **rank transactions by risk** and convert scores into **operational actions under capacity constraints**.
+This project focuses on what real fraud systems do: **rank transactions by risk** and convert scores into **operational actions under capacity constraints**.**Baseline (numeric-only):** PR-AUC 0.572 (valid) → 0.462 (test); Precision@1000 ≈ 0.90 (test).
 
 ## Quick links
 - [Model card](reports/model_card.md)

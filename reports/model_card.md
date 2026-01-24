@@ -1,52 +1,104 @@
 # Model Card — IEEE-CIS Fraud Detection (Baseline + Decisioning)
 
-## Intended use
-Rank transactions by fraud risk to support operational actions under capacity constraints:
+## 1) Intended use
+This model produces a **fraud risk score** to **rank transactions** and support operational actions under capacity constraints:
 **decline / review / step-up / approve**.
 
-## Data
+**Not intended for:** making final fraud decisions without human/secondary checks, or deployment without calibration + monitoring.
+
+---
+
+## 2) Data
 - Source: IEEE-CIS Fraud Detection (Kaggle)
-- Join: transaction + identity on `TransactionID`
-- Split: chronological **60/20/20** using `TransactionDT` (prevents leakage, matches production)
+- Join: `transaction` + `identity` on `TransactionID` (left join)
+- Label: `isFraud` (train only)
+- Split: **chronological 60/20/20** using `TransactionDT` (prevents leakage, matches production drift)
 
-## Model (baseline)
+> Raw Kaggle data is not included in this repository.
+
+---
+
+## 3) Model (baseline)
 - Algorithm: `HistGradientBoostingClassifier`
-- Features: numeric-only baseline (**400 numeric columns**)
-- Missing values: median imputation (fit on train only)
-- Output: risk score used for ranking and decisioning
+- Features: **numeric-only baseline (400 numeric columns)**
+- Missing values: `SimpleImputer(strategy="median")` (fit on train only; applied to valid/test)
+- Output: probability-like score used for ranking + decisioning
 
-## Metrics
-Base rates:
-- Valid: 0.0390
-- Test: 0.0344
+Why this baseline:
+- Establishes a strong reference point before adding categorical encoding and calibration.
 
-PR-AUC (Average Precision):
-- Valid: 0.572
-- Test: 0.462
+---
 
-## Decision policy (capacity-locked, rank-based)
-Actions:
-- Decline: top 100
-- Review: ranks 101–1000
-- Step-up: ranks 1001–10000
-- Approve: remaining
+## 4) Evaluation setup
+Primary goal is **ranking quality** under class imbalance (~3–4% fraud).
+Metrics reported on validation + test:
+- **PR-AUC (Average Precision)**: overall ranking performance for rare fraud
+- **Precision@K / Recall@K**: quality of top-K alerts given limited capacity
 
-Policy performance:
-- Valid: Precision@100=1.00, Precision@1000=0.915, Precision@10000=0.317
-- Test:  Precision@100=1.00, Precision@1000=0.900, Precision@10000=0.243
+---
 
-## Monitoring
-Temporal bins (TransactionDT quantiles) on test slice:
-- Score drift + fraud-rate drift plots
-- PSI drift of score distribution vs earliest bin
-- Max PSI: 0.067 (small distribution drift)
+## 5) Results (Validation → Test)
 
-## Limitations
-- Numeric-only baseline: categoricals not yet encoded
-- Scores are ranking-first; calibration not yet applied
-- Offline evaluation; production needs delayed-label monitoring and feedback loop
+**Base rate**
+- Validation: **3.90%**
+- Test: **3.44%**
 
-## Next improvements
-- Categorical encoding (one-hot / frequency; leakage-safe)
-- Calibration + cost-based threshold optimization (expected profit / cost curve)
-- Feature drift PSI + retrain triggers
+**PR-AUC**
+- Validation: **0.572**
+- Test: **0.462**
+
+**Precision@K / Recall@K**
+- **K=1000** (review-like capacity)
+  - Valid: precision **0.915**, recall **0.198**
+  - Test:  precision **0.900**, recall **0.221**
+- **K=10000** (review + step-up total capacity)
+  - Valid: precision **0.317**, recall **0.688**
+  - Test:  precision **0.243**, recall **0.598**
+
+Interpretation:
+- Even at K=10,000, precision is several times higher than the base rate (strong lift).
+
+---
+
+## 6) Decision policy (capacity-locked ranking)
+A rank-based policy is used to keep action volumes stable over time (prevents queue drift from score drift).
+
+Example:
+- Top **K_decline** → decline
+- Next **K_review** → review
+- Next **K_step_up** → step-up
+- Rest → approve
+
+Artifacts:
+- `reports/sample_decisions_test.csv`
+- `reports/sample_decisions_test_rank_policy.csv`
+- `reports/metrics_summary.json`
+
+---
+
+## 7) Monitoring
+The following monitoring artifacts are produced to detect drift:
+- Score drift over time bins (mean score)
+- Fraud rate drift over time bins (label drift)
+- PSI vs first time bin (distribution shift)
+
+Figures:
+- `reports/figures/score_drift_test.png`
+- `reports/figures/fraud_rate_over_time_test.png`
+- `reports/figures/psi_score_drift_test.png`
+
+---
+
+## 8) Limitations & risks
+- Baseline is **numeric-only**; categorical variables are not yet encoded.
+- Predicted probabilities are **not calibrated**; thresholds may not transfer across time.
+- Dataset features are anonymized; interpretation is limited.
+- Real systems require fairness / policy review depending on use case.
+
+---
+
+## 9) Next improvements
+- Add categorical handling (frequency / target encoding)
+- Add calibration (Platt / isotonic) and evaluate calibration curves
+- Cost-sensitive thresholding (expected profit / loss by action)
+- Automated monitoring reports and alerting rules

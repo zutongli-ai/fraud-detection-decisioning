@@ -82,11 +82,20 @@ The following monitoring artifacts are produced to detect drift:
 - Fraud rate drift over time bins (label drift)
 - PSI vs first time bin (distribution shift)
 
-Figures:
-- `reports/figures/score_drift_test.png`
-- `reports/figures/fraud_rate_over_time_test.png`
-- `reports/figures/psi_score_drift_test.png`
+### Score drift (mean model score over time bins)
+<p align="center">
+  <img src="figures/score_drift_test.png" width="650">
+</p>
 
+### Fraud rate drift (label drift over time bins)
+<p align="center">
+  <img src="figures/fraud_rate_over_time_test.png" width="650">
+</p>
+
+### PSI drift (distribution shift vs first time bin)
+<p align="center">
+  <img src="figures/psi_score_drift_test.png" width="650">
+</p>
 ---
 
 ## 8) Limitations & risks
